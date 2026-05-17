@@ -113,7 +113,13 @@ namespace JsonFileHandler
         }
 
         File dir = LittleFS.open(path.c_str());
-        if (!dir || !dir.isDirectory())
+        if (!dir)
+        {
+            LittleFS.mkdir(path.c_str());
+            return;
+        }
+        
+        if (!dir.isDirectory())
         {
             dir.close();
             return;
