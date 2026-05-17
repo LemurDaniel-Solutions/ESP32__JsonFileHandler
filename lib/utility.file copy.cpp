@@ -15,33 +15,12 @@ namespace EspWeb
         return std::string(FOLDER_TEMP) + "/" + randomString(8);
     }
 
-    bool fileExists(const std::string &filePath)
+    bool fileExists(const String &filePath)
     {
-        return LittleFS.exists(filePath.c_str());
+        return LittleFS.exists(filePath);
     }
 
-    FileInfo getFileInfo(const std::string &filePath)
-    {
-        File file = LittleFS.open(filePath.c_str(), "r");
 
-        FileInfo info;
-        info.isDirectory = file.isDirectory();
-        info.name = file.name();
-        info.path = file.path();
-        info.baseName = info.name;
-        info.extension = "";
-
-        size_t dot = info.name.find_first_of('.');
-        if (dot != std::string::npos && dot > 0)
-        {
-            info.extension = info.name.substr(dot);
-            info.baseName = info.name.substr(0, dot);
-        }
-
-        file.close();
-
-        return info;
-    }
 
     /*-------------------------------------------------------------------------------------------------
      *

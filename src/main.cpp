@@ -1,13 +1,11 @@
 #include <Arduino.h>
+#include <../lib/jsonFileHandler.h>
 
-#include <MiniServer.h>
-
-#include <routes/routes.example.h>
+#include <LittleFS.h>
 
 void setup()
 {
   Serial.begin(115200);
-
 }
 
 void loop()
