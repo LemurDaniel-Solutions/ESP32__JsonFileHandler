@@ -157,4 +157,43 @@ namespace JsonFileHandler
 
         return LittleFS.exists(path.c_str());
     }
+
+    bool JsonFileHandler::removeFile(const std::string &path)
+    {
+        if (!LittleFS.begin())
+        {
+            Serial.println("Failed to mount LittleFs");
+            return false;
+        }
+
+        if (!exists(path))
+        {
+            Serial.printf("ℹ️ No file found at %s to remove.\n", path.c_str());
+            return false;
+        }
+
+        return LittleFS.remove(path.c_str());
+    }
+
+    bool JsonFileHandler::moveFile(const std::string &path, const std::string &destination)
+    {
+        if (!LittleFS.begin())
+        {
+            Serial.println("Failed to mount LittleFs");
+            return false;
+        }
+
+        if (!exists(path))
+        {
+            Serial.printf("ℹ️ No file found at %s to move.\n", path.c_str());
+            return false;
+        }
+
+        const Info info = getInfo(path);
+        std::string destinationPath = destination + "/" + info.name;
+
+        Serial.printf("ℹ️ Move from %s to %s\n", path.c_str(), destinationPath.c_str());
+
+        return LittleFS.rename(path.c_str(), destinationPath.c_str());
+    }
 }

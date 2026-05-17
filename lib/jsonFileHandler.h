@@ -55,8 +55,8 @@ namespace JsonFileHandler
          **/
         bool exists(const std::string &path);
 
-        void removeFile(const std::string &path);
-        void moveFile(const std::string &path, const std::string &destination, const std::string &relativePath = "");
+        bool removeFile(const std::string &path);
+        bool moveFile(const std::string &path, const std::string &destination);
 
         JsonDocument readJson(const std::string &path);
         void writeJson(const std::string &path, const JsonDocument &doc);
