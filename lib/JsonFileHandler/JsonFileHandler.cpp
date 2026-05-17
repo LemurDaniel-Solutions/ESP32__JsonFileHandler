@@ -1,8 +1,7 @@
-// ESP32 MiniWebServer Framework - https://github.com/LemurDaniel/ESP32__MiniWebServer-Framework
-// Copyright © 2026, Daniel Landau
+// Copyright © 2026, Daniel Landau - LemurDaniel
 // MIT License
 
-#include <../lib/jsonFileHandler.h>
+#include "jsonFileHandler.h"
 
 namespace JsonFileHandler
 {
@@ -195,5 +194,72 @@ namespace JsonFileHandler
         Serial.printf("ℹ️ Move from %s to %s\n", path.c_str(), destinationPath.c_str());
 
         return LittleFS.rename(path.c_str(), destinationPath.c_str());
+    }
+
+    /*-------------------------------------------------------------------------------------------------
+     *
+     * Read and write JSON
+     *
+     **/
+
+    JsonDocument JsonFileHandler::readJson(const std::string &path)
+    {
+        if (!LittleFS.begin())
+        {
+            Serial.println("Failed to mount LittleFs");
+            return JsonDocument();
+        }
+
+        if (!exists(path))
+        {
+            Serial.printf("❌ CRITICAL: JSON file %s not found!\n", path.c_str());
+            return JsonDocument();
+        }
+
+        File file = LittleFS.open(path.c_str(), "r");
+        if (!file)
+        {
+            Serial.printf("❌ CRITICAL: Failed to open JSON file %s for reading!\n", path.c_str());
+            return JsonDocument();
+        }
+
+        size_t size = file.size();
+        std::string jsonStr(size, '\0');
+        file.readBytes(&jsonStr[0], size);
+        file.close();
+
+        JsonDocument doc;
+        DeserializationError error = deserializeJson(doc, jsonStr);
+        if (error)
+        {
+            Serial.printf("❌ CRITICAL: Failed to parse JSON file %s! Error: %s\n", path.c_str(), error.c_str());
+            return JsonDocument();
+        }
+
+        return doc;
+    }
+
+    void JsonFileHandler::writeJson(const std::string &path, const JsonDocument &doc)
+    {
+        if (!LittleFS.begin())
+        {
+            Serial.println("Failed to mount LittleFs");
+            return;
+        }
+
+        File file = LittleFS.open(path.c_str(), "w", true);
+        if (!file)
+        {
+            Serial.printf("❌ CRITICAL: Failed to open JSON file %s for writing!\n", path.c_str());
+            return;
+        }
+
+        std::string jsonStr;
+        serializeJson(doc, jsonStr);
+
+        file.print(jsonStr.c_str());
+        file.close();
+
+        Serial.printf("✅ Successfully wrote JSON file %s\n", path.c_str());
     }
 }

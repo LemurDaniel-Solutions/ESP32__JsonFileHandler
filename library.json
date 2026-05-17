@@ -21,7 +21,7 @@
     "LittleFS": "*"
   },
   "build": {
-    "srcDir": "lib",
+    "srcDir": "lib/JsonFileHandler",
      "flags": ["-Os"]
   },
   "export": {
