@@ -35,6 +35,34 @@ namespace JsonFileHandler
         return result;
     }
 
+    std::string JsonFileHandler::trim(const std::string &s, const std::string &trimmer)
+    {
+        size_t start = s.find_first_of(trimmer);
+        if (start == std::string::npos)
+            return "";
+
+        size_t end = s.find_last_of(trimmer);
+        return s.substr(start, end - start + 1);
+    }
+
+    std::vector<std::string> JsonFileHandler::split(const std::string &text, const std::string &splitter)
+    {
+        std::vector<std::string> elements;
+
+        size_t pos = 0;
+        while (pos < text.size())
+        {
+            size_t end = text.find(splitter, pos);
+            if (end == std::string::npos)
+                end = text.size();
+
+            elements.push_back(trim(text.substr(pos, end - pos)));
+            pos = end + splitter.size();
+        }
+
+        return elements;
+    }
+
     Info JsonFileHandler::getInfo(const std::string &path)
     {
         Info info;
@@ -118,7 +146,7 @@ namespace JsonFileHandler
             LittleFS.mkdir(path.c_str());
             return;
         }
-        
+
         if (!dir.isDirectory())
         {
             dir.close();

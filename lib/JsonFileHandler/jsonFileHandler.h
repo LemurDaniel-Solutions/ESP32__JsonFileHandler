@@ -38,6 +38,9 @@ namespace JsonFileHandler
         std::string randomString(int size);
         Info getInfo(const std::string &path);
 
+        std::string trim(const std::string &s, const std::string &trimmer = " ");
+        std::vector<std::string> split(const std::string &text, const std::string &splitter);
+
         /*-------------------------------------------------------------------------------------------------
          *
          * Folder and Folder Contents
